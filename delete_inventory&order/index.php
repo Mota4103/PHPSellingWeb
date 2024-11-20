@@ -9,7 +9,7 @@
                     require("../connection.php");
 
                     // Fetch distinct product types based on seller ID from session
-                    $query = "SELECT DISTINCT seller_username, DISTINCT seller_ID FROM seller";
+                    $query = "SELECT DISTINCT seller_username DISTINCT seller_ID FROM seller";
                     $result = mysqli_query($db, $query);
 
                     if ($result) {

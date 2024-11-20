@@ -17,7 +17,7 @@ $current_quantity = 0;
 // Check if a valid product ID is provided
 if ($product_id > 0) {
     // Fetch the current quantity for the product
-    $query = "SELECT product_quantity FROM product WHERE product_ID='$product_id'";
+    $query = "SELECT product_quantity FROM production WHERE product_ID='$product_id'";
     $result = mysqli_query($db, $query);
     
     if ($row = mysqli_fetch_assoc($result)) {
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $product_id = (int)$_POST['product_id'];
 
     // Check if the product exists in the database
-    $query = "SELECT product_quantity FROM product WHERE product_ID='$product_id'";
+    $query = "SELECT product_quantity FROM production WHERE product_ID='$product_id'";
     $result = mysqli_query($db, $query);
 
     if ($row = mysqli_fetch_assoc($result)) {
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         // Update the product quantity in the database
-        $update_query = "UPDATE product SET product_quantity='$new_quantity' WHERE product_ID='$product_id'";
+        $update_query = "UPDATE production SET product_quantity='$new_quantity' WHERE product_ID='$product_id'";
         if (mysqli_query($db, $update_query)) {
             // Success - Redirect to inventory.php
             header("Location: ../inventory");

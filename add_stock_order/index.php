@@ -7,7 +7,7 @@ $product_ID = isset($_GET['product_ID']) ? intval($_GET['product_ID']) : 0;
 $seller_id = $_SESSION['id'];
 
 // Fetch the selected product details for the seller
-$product_query = "SELECT product_name FROM product WHERE product_ID = $product_ID AND seller_ID = $seller_id";
+$product_query = "SELECT product_name FROM production WHERE product_ID = $product_ID AND seller_ID = $seller_id";
 $product_result = mysqli_query($db, $product_query);
 $product = mysqli_fetch_assoc($product_result);
 
@@ -43,7 +43,7 @@ if (!$product) {
                 <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
                 <select id="type" name="type" 
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md" required>
-                    <option value="New Stock">New Stock</option>
+                    <option value="Stock">New Stock</option>
                     <option value="Expired">Expired</option>
                     <option value="Damaged">Damaged</option>
                     <option value="Returned">Returned</option>

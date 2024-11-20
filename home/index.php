@@ -45,14 +45,6 @@
                         <button class="text-gray-800 font-semibold text-lg">Adjust Staff</button>
                     </div>
                 </a>
-                <!-- Delete Inventory & Order Button -->
-                <div class="flex justify-center col-span-2">
-                    <a href="../delete_inventory&order" class="block w-full">
-                        <div class="bg-gray-200 rounded-lg p-6 flex items-center justify-center">
-                            <button class="text-gray-800 font-semibold text-lg">Delete Inventory & Order</button>
-                        </div>
-                    </a>
-                </div>
             </div>
             <!-- Logout Button -->
             <div class="mt-8">
@@ -72,7 +64,7 @@
         <div class="flex justify-center space-x-10">
             <!-- Inventory Button -->
             <div class="bg-white p-6 rounded-lg shadow-lg text-center cursor-pointer" onclick="window.location.href=\'../inventory\'">
-                <img src="https://img.icons8.com/ios/452/inventory.png" alt="Inventory" class="mx-auto w-16 h-16 mb-4">
+                <img src="https://img.icons8.com/ios-filled/50/000000/warehouse.png" alt="Inventory" class="mx-auto w-16 h-16 mb-4">
                 <p class="text-lg font-semibold">Inventory</p>
             </div>
             <!-- Order Button -->

@@ -20,9 +20,9 @@ $order_query = "
     FROM 
         orders o
     LEFT JOIN 
-        relation r ON o.orders_ID = r.orders_ID
+        relation2 r ON o.orders_ID = r.orders_ID
     LEFT JOIN 
-        product p ON r.product_ID = p.product_ID
+        production p ON r.product_ID = p.product_ID
     WHERE 
         o.orders_ID = $order_id
     GROUP BY 
@@ -39,13 +39,15 @@ $product_query = "
         p.product_price, 
         (r.orders_quantity * p.product_price) AS total_price_per_product
     FROM 
-        product p
+        production p
     JOIN 
-        relation r ON p.product_ID = r.product_ID
+        relation2 r ON p.product_ID = r.product_ID
     WHERE 
         r.orders_ID = $order_id";
 $product_result = mysqli_query($db, $product_query);
 
+// Check user type
+$type = $_SESSION["usertype"] ?? null;
 ?>
 <html lang="en">
 <head>
@@ -94,21 +96,26 @@ $product_result = mysqli_query($db, $product_query);
                 <p class="mt-4 text-gray-600">No products assigned to this order yet.</p>
             <?php endif; ?>
 
-            <a href="../add_product?order_id=<?php echo $order_id; ?>" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded-md">
-                Add Product to Order
-            </a>
-            <!-- Go Back Link -->
+            <!-- Conditionally display buttons based on user type -->
+            <?php if ($type !== "staff"): ?>
+                <a href="../add_product?order_id=<?php echo $order_id; ?>" class="mt-6 inline-block bg-blue-600 text-white px-4 py-2 rounded-md">
+                    Add Product to Order
+                </a>
+                <a href="./edit_paid.php?order_id=<?php echo $order_id; ?>" class="mt-4 inline-block bg-yellow-500 text-white px-4 py-2 rounded-md">
+                    Edit Payment
+                </a>
+                <a href="./delete_order.php?order_id=<?php echo $order_id; ?>" 
+                   onclick="return confirm('Are you sure you want to delete this order? This action cannot be undone.');"
+                   class="mt-4 inline-block bg-red-600 text-white px-4 py-2 rounded-md">
+                    Delete Order
+                </a>
+            <?php endif; ?>
+
+            <!-- Go Back Button (Visible to all users) -->
             <a href="../order" class="mt-4 inline-block bg-gray-600 text-white px-4 py-2 rounded-md">
                 Go Back 
             </a>
-            <a href="./edit_paid.php?order_id=<?php echo $order_id; ?>" class="mt-4 inline-block bg-yellow-500 text-white px-4 py-2 rounded-md">
-                Edit Payment
-            </a>
-            <a href="./delete_order.php?order_id=<?php echo $order_id; ?>" 
-                onclick="return confirm('Are you sure you want to delete this order? This action cannot be undone.');"
-                class="mt-4 inline-block bg-red-600 text-white px-4 py-2 rounded-md">
-                Delete Order
-            </a>
+
         <?php else: ?>
             <p class="text-red-600">Order not found.</p>
         <?php endif; ?>

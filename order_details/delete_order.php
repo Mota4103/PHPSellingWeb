@@ -6,7 +6,7 @@ if (isset($_GET['order_id'])) {
     $order_id = intval($_GET['order_id']);
 
     // First, delete related entries in the `relation` table to avoid foreign key constraint issues
-    $delete_relation_query = "DELETE FROM relation WHERE orders_ID = $order_id";
+    $delete_relation_query = "DELETE FROM relation2 WHERE orders_ID = $order_id";
     mysqli_query($db, $delete_relation_query);
 
     // Now delete the order from the `orders` table

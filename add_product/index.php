@@ -4,11 +4,20 @@ require_once("../connection.php");
 session_start();
 
 $seller_id = $_SESSION['id'];
-// Get the order_id from the URL
 $order_id = isset($_GET['order_id']) ? intval($_GET['order_id']) : 0;
+
 // Fetch available products
-$product_query = "SELECT product_ID, product_name, product_price FROM product WHERE seller_ID = $seller_id";
+$product_query = "SELECT product_ID, product_name, product_price FROM production WHERE seller_ID = $seller_id";
 $product_result = mysqli_query($db, $product_query);
+
+// Create a PHP array of products for validation
+$products = [];
+while ($row = mysqli_fetch_assoc($product_result)) {
+    $products[$row['product_name']] = ['id' => $row['product_ID'], 'price' => $row['product_price']];
+}
+
+// Reset the query result for reuse
+mysqli_data_seek($product_result, 0);
 ?>
 <html lang="en">
 <head>
@@ -26,26 +35,26 @@ $product_result = mysqli_query($db, $product_query);
             <!-- Product Selection with Datalist -->
             <div class="mb-4">
                 <label for="product_name" class="block text-sm font-medium text-gray-700">Select Product</label>
-                <input list="product_list" id="product_name" name="product_name" 
-                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md" 
+                <input list="product_list" id="product_name" name="product_name"
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                        placeholder="Start typing product name" required>
                 
                 <datalist id="product_list">
-                    <?php while ($product = mysqli_fetch_assoc($product_result)): ?>
-                        <option value="<?php echo htmlspecialchars($product['product_name']); ?>" 
-                                data-price="<?php echo htmlspecialchars($product['product_price']); ?>" 
-                                data-id="<?php echo $product['product_ID']; ?>">
-                            <?php echo htmlspecialchars($product['product_name']) . " - $" . htmlspecialchars($product['product_price']); ?>
+                    <?php foreach ($products as $name => $details): ?>
+                        <option value="<?php echo htmlspecialchars($name); ?>" 
+                                data-id="<?php echo htmlspecialchars($details['id']); ?>" 
+                                data-price="<?php echo htmlspecialchars($details['price']); ?>">
+                            <?php echo htmlspecialchars($name) . " - $" . htmlspecialchars($details['price']); ?>
                         </option>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </datalist>
             </div>
 
             <!-- Quantity Input -->
             <div class="mb-4">
                 <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
-                <input type="number" id="quantity" name="quantity" 
-                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md" 
+                <input type="number" id="quantity" name="quantity"
+                       class="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                        placeholder="Enter quantity" required>
             </div>
 
@@ -58,18 +67,20 @@ $product_result = mysqli_query($db, $product_query);
     </div>
 
     <script>
-        // JavaScript to autofill hidden product ID and price based on selection
+        // Autofill hidden product ID based on selected name
         const productInput = document.getElementById('product_name');
         const productList = document.getElementById('product_list');
 
         productInput.addEventListener('input', function() {
             const options = productList.options;
+            let validProduct = false;
+
             for (let i = 0; i < options.length; i++) {
                 if (options[i].value === productInput.value) {
+                    validProduct = true;
                     const productID = options[i].getAttribute('data-id');
-                    const productPrice = options[i].getAttribute('data-price');
-                    
-                    // Create hidden fields for product ID and price
+
+                    // Set hidden product ID field
                     if (!document.getElementById('product_id')) {
                         const productIdInput = document.createElement('input');
                         productIdInput.type = 'hidden';
@@ -78,16 +89,13 @@ $product_result = mysqli_query($db, $product_query);
                         document.forms[0].appendChild(productIdInput);
                     }
                     document.getElementById('product_id').value = productID;
-
-                    if (!document.getElementById('product_price')) {
-                        const productPriceInput = document.createElement('input');
-                        productPriceInput.type = 'hidden';
-                        productPriceInput.id = 'product_price';
-                        productPriceInput.name = 'product_price';
-                        document.forms[0].appendChild(productPriceInput);
-                    }
-                    document.getElementById('product_price').value = productPrice;
+                    break;
                 }
+            }
+
+            // If invalid product, clear hidden product ID field
+            if (!validProduct && document.getElementById('product_id')) {
+                document.getElementById('product_id').value = '';
             }
         });
     </script>

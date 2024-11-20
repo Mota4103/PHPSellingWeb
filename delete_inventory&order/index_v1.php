@@ -9,7 +9,7 @@ if (isset($_POST['fetch_products']) && !empty($_POST['seller_username'])) {
     // Temporarily set seller_id for testing
     $seller_id = 1; // Use an actual seller ID that exists in your database for this test
 
-    $product_query = "SELECT * FROM product WHERE seller_ID = $seller_id ORDER BY product_name ASC";
+    $product_query = "SELECT * FROM production WHERE seller_ID = $seller_id ORDER BY product_name ASC";
     $product_result = mysqli_query($db, $product_query);
 
     // Display the table if the product query is successful
@@ -55,7 +55,7 @@ if (isset($_POST['fetch_products']) && !empty($_POST['seller_username'])) {
 // AJAX handler for deleting a product
 if (isset($_POST['delete']) && !empty($_POST['product_ID'])) {
     $product_id = intval($_POST['product_ID']);
-    $delete_query = "DELETE FROM product WHERE product_ID = $product_id";
+    $delete_query = "DELETE FROM production WHERE product_ID = $product_id";
     mysqli_query($db, $delete_query);
     exit;
 }

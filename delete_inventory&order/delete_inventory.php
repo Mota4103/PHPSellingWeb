@@ -33,8 +33,8 @@ if (!$user_id) {
 $query = "SELECT o.orders_ID, o.customer_name, o.customer_channel, o.customer_address, o.orders_paid, o.orders_paid_status, o.orders_date,
                  SUM(r.orders_quantity * p.product_price) AS total_order_price
           FROM orders o
-          JOIN relation r ON o.orders_ID = r.orders_ID
-          JOIN product p ON r.product_ID = p.product_ID
+          JOIN relation2 r ON o.orders_ID = r.orders_ID
+          JOIN production p ON r.product_ID = p.product_ID
           WHERE o.orders_seller = $user_id";
 $filter_conditions = [];
 

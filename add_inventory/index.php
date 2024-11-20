@@ -31,12 +31,6 @@
                     <input type="text" id="product_name" name="product_name" placeholder="Enter Product Name" class="mt-1 block w-full p-3 border border-gray-300 rounded-md" required>
                 </div>
 
-                <!-- Product Quantity -->
-                <div>
-                    <label for="product_quantity" class="block text-sm font-medium text-gray-700">Product Quantity</label>
-                    <input type="number" id="product_quantity" name="product_quantity" placeholder="Enter Quantity" class="mt-1 block w-full p-3 border border-gray-300 rounded-md" required>
-                </div>
-
                 <!-- Product Price -->
                 <div>
                     <label for="product_price" class="block text-sm font-medium text-gray-700">Product Price</label>
@@ -60,7 +54,7 @@
 
                         if (isset($_SESSION['id'])) {
                             $seller_ID = mysqli_real_escape_string($db, $_SESSION['id']);
-                            $query = "SELECT DISTINCT product_type FROM product WHERE seller_ID = '$seller_ID'";
+                            $query = "SELECT DISTINCT product_type FROM production WHERE seller_ID = '$seller_ID'";
                             $result = mysqli_query($db, $query);
 
                             if (!$result || mysqli_num_rows($result) == 0) {

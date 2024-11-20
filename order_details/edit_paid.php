@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $update_query = "UPDATE orders SET orders_paid = $orders_paid, orders_paid_status = '$orders_paid_status' WHERE orders_ID = $order_id";
     mysqli_query($db, $update_query);
 
-    header("Location: ../product?order_id=$order_id");
+    header("Location: ../order_details?order_id=$order_id");
     exit;
 }
 ?>
@@ -53,10 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <option value="Pending" <?php if ($order['orders_paid_status'] === 'Pending') echo 'selected'; ?>>Pending</option>
                     </select>
                 </div>
-
                 <button type="submit" class="w-full py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700">
                     Update Payment
                 </button>
+
+
             </form>
 
             <a href="../order_details?order_id=<?php echo $order_id; ?>" class="mt-4 inline-block text-blue-600 hover:underline">Back to Order Details</a>

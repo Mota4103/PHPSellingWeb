@@ -2,23 +2,29 @@
 require_once("../connection.php");
 session_start();
 
+$seller_ID = $_SESSION["id"];
 // Get the product_ID from the URL
 $product_ID = isset($_GET['product_ID']) ? intval($_GET['product_ID']) : 0;
 
 // Fetch product details from the database
 $product_query = "
     SELECT 
-        product_ID, 
-        product_name, 
-        product_price, 
-        product_type, 
-        product_sold, 
-        product_note, 
-        seller_ID
+        p.product_ID, 
+        p.product_name, 
+        p.product_type,
+        p.product_note,
+        p.product_price, 
+        IFNULL(SUM(r.orders_quantity), 0) AS product_sold
     FROM 
-        product 
+        production p
+    LEFT JOIN 
+        relation2  r ON p.product_ID = r.product_ID
     WHERE 
-        product_ID = $product_ID";
+        p.seller_ID = $seller_ID
+    AND 
+        p.product_ID = $product_ID
+    GROUP BY 
+        p.product_ID";
 $product_result = mysqli_query($db, $product_query);
 
 if (!$product_result) {
@@ -37,7 +43,7 @@ $combined_query = "
     FROM 
         orders o
     JOIN 
-        relation r ON o.orders_ID = r.orders_ID
+        relation2 r ON o.orders_ID = r.orders_ID
     WHERE 
         r.product_ID = $product_ID
     UNION ALL
@@ -47,7 +53,7 @@ $combined_query = "
         so.quantity, 
         so.stockorder_date
     FROM 
-        stockorder so
+        stockorder2 so
     WHERE 
         so.product_ID = $product_ID
     ORDER BY date DESC";
@@ -73,7 +79,7 @@ if (!$combined_result) {
             <p><strong>Product Type:</strong> <?php echo htmlspecialchars($product['product_type']); ?></p>
             <p><strong>Price:</strong> <?php echo htmlspecialchars($product['product_price']); ?></p>
             <p><strong>Quantity Sold:</strong> <?php echo htmlspecialchars($product['product_sold']); ?></p>
-            <p><strong>Seller ID:</strong> <?php echo htmlspecialchars($product['seller_ID']); ?></p>
+            <p><strong>Seller ID:</strong> <?php echo htmlspecialchars($seller_ID ); ?></p>
             <p><strong>Note:</strong> <?php echo htmlspecialchars($product['product_note']); ?></p>
 
             <h3 class="mt-6 text-xl font-semibold">Stock Details</h3>
